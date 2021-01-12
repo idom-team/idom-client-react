@@ -8,52 +8,6 @@ import serializeEvent from "./event-to-object";
 const html = htm.bind(react.createElement);
 const LayoutConfigContext = react.createContext({});
 
-export function mountLayoutWithWebSocket(
-  mountElement,
-  endpoint,
-  importSourceUrl
-) {
-  if (endpoint.startsWith(".") || endpoint.startsWith("/")) {
-    let loc = window.location;
-    let protocol;
-    if (loc.protocol === "https:") {
-      protocol = "wss:";
-    } else {
-      protocol = "ws:";
-    }
-    let new_uri = protocol + "//" + loc.host;
-    if (endpoint.startsWith(".")) {
-      new_url += loc.pathname + "/";
-    }
-    endpoint = new_uri + endpoint;
-  }
-
-  const ws = new WebSocket(endpoint);
-
-  function saveUpdateHook(update) {
-    ws.onmessage = (event) => {
-      const [pathPrefix, patch] = JSON.parse(event.data);
-      update(pathPrefix, patch);
-    };
-  }
-
-  function sendCallback(event) {
-    ws.send(
-      JSON.stringify({
-        header: {},
-        body: { event: event },
-      })
-    );
-  }
-
-  return mountLayout(
-    mountElement,
-    saveUpdateHook,
-    sendCallback,
-    importSourceUrl
-  );
-}
-
 export function mountLayout(
   mountElement,
   saveUpdateHook,
