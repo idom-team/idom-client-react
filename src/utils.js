@@ -19,7 +19,7 @@ export function applyPatchInplace(doc, path, patch) {
   }
 }
 
-function getPathProperty(obj, prop) {
+export function getPathProperty(obj, prop) {
   // properties may be dot seperated strings
   const path = prop.split(".");
   const firstProp = path.shift();
