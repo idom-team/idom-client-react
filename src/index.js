@@ -1,9 +1,15 @@
 import * as react from "react";
 import * as reactDOM from "react-dom";
 import htm from "htm";
-import * as jsonpatch from "fast-json-patch";
 
 import serializeEvent from "./event-to-object";
+
+import {
+  applyPatchInplace,
+  getPathProperty,
+  joinUrl,
+  randomUUID,
+} from "./utils";
 
 const html = htm.bind(react.createElement);
 const LayoutConfigContext = react.createContext({});
@@ -108,6 +114,7 @@ function elementChildren(model) {
 
 function elementAttributes(model, sendEvent) {
   const attributes = Object.assign({}, model.attributes);
+  'key' in attributes || (attributes.key = randomUUID());
 
   if (model.eventHandlers) {
     Object.keys(model.eventHandlers).forEach((eventName) => {
@@ -154,17 +161,6 @@ function useLazyModule(source, sourceUrlBase = "") {
   return module;
 }
 
-function getPathProperty(obj, prop) {
-  // properties may be dot seperated strings
-  const path = prop.split(".");
-  const firstProp = path.shift();
-  let value = obj[firstProp];
-  for (let i = 0; i < path.length; i++) {
-    value = value[path[i]];
-  }
-  return value;
-}
-
 function useInplaceJsonPatch(doc) {
   const ref = react.useRef(doc);
   const forceUpdate = useForceUpdate();
@@ -180,32 +176,7 @@ function useInplaceJsonPatch(doc) {
   return [ref.current, applyPatch];
 }
 
-function applyPatchInplace(doc, path, patch) {
-  if (!path) {
-    jsonpatch.applyPatch(doc, patch);
-  } else {
-    jsonpatch.applyPatch(doc, [
-      {
-        op: "replace",
-        path: path,
-        value: jsonpatch.applyPatch(
-          jsonpatch.getValueByPointer(doc, path),
-          patch,
-          false,
-          false
-        ).newDocument,
-      },
-    ]);
-  }
-}
-
 function useForceUpdate() {
   const [, updateState] = react.useState();
   return react.useCallback(() => updateState({}), []);
-}
-
-function joinUrl(base, tail) {
-  return tail.startsWith("./")
-    ? (base.endsWith("/") ? base.slice(0, -1) : base) + tail.slice(1)
-    : tail;
 }
