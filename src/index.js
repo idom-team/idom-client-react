@@ -4,12 +4,7 @@ import htm from "htm";
 
 import serializeEvent from "./event-to-object";
 
-import {
-  applyPatchInplace,
-  getPathProperty,
-  joinUrl,
-  randomUUID,
-} from "./utils";
+import { applyPatchInplace, getPathProperty, joinUrl } from "./utils";
 
 const html = htm.bind(react.createElement);
 const LayoutConfigContext = react.createContext({});
@@ -114,7 +109,6 @@ function elementChildren(model) {
 
 function elementAttributes(model, sendEvent) {
   const attributes = Object.assign({}, model.attributes);
-  'key' in attributes || (attributes.key = randomUUID());
 
   if (model.eventHandlers) {
     Object.keys(model.eventHandlers).forEach((eventName) => {
