@@ -78,6 +78,9 @@ const eventCategoryTransforms = {
     pseudoElement: event.pseudoElement,
     elapsedTime: event.elapsedTime,
   }),
+  audio: (event) => ({
+    currentTime: event.currentTime,
+  }),
 };
 
 const eventTypeCategories = {
@@ -122,6 +125,7 @@ const eventTypeCategories = {
   wheel: ["wheel"],
   animation: ["animationstart", "animationend", "animationiteration"],
   transition: ["transitionend"],
+  audio: ["ontimeupdate"],
 };
 
 const eventTransforms = {};
