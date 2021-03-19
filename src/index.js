@@ -62,11 +62,21 @@ function ImportedElement({ model }) {
     model.importSource.source,
     config.importSourceUrl
   );
+  const ref = react.useRef(null);
+  react.useEffect(() => {
+    if (ref.current) {
+      module.renderComponent(
+        makeComponentFromModule(module, model, config),
+        ref.current
+      );
+    }
+  }, [ref, module, model, config]);
   if (module) {
-    const cmpt = getPathProperty(module, model.tagName);
-    const children = elementChildren(model);
-    const attributes = elementAttributes(model, config.sendEvent);
-    return html`<${cmpt} ...${attributes}>${children}<//>`;
+    if (module.renderComponent) {
+      return html`<div ref=${ref} />`;
+    } else {
+      return makeComponentFromModule(module, model, config);
+    }
   } else {
     const fallback = model.importSource.fallback;
     if (!fallback) {
@@ -153,6 +163,13 @@ function useLazyModule(source, sourceUrlBase = "") {
     eval(`import("${joinUrl(sourceUrlBase, source)}")`).then(setModule);
   }
   return module;
+}
+
+function makeComponentFromModule(module, model, config) {
+  const cmptDef = getPathProperty(module, model.tagName);
+  const children = elementChildren(model);
+  const attributes = elementAttributes(model, config.sendEvent);
+  return html`<${cmptDef} ...${attributes}>${children}<//>`;
 }
 
 function useInplaceJsonPatch(doc) {
