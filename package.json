@@ -13,7 +13,7 @@
     "src/**/*.js"
   ],
   "scripts": {
-    "format": "prettier --write ./src",
+    "format": "prettier --print-width 88 --write ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

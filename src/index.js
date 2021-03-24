@@ -9,12 +9,7 @@ import { applyPatchInplace, getPathProperty, joinUrl } from "./utils";
 const html = htm.bind(react.createElement);
 const LayoutConfigContext = react.createContext({});
 
-export function mountLayout(
-  mountElement,
-  saveUpdateHook,
-  sendEvent,
-  importSourceUrl
-) {
+export function mountLayout(mountElement, saveUpdateHook, sendEvent, importSourceUrl) {
   reactDOM.render(
     html`
       <${Layout}
@@ -58,10 +53,7 @@ function Element({ model }) {
 
 function ImportedElement({ model }) {
   const config = react.useContext(LayoutConfigContext);
-  const module = useLazyModule(
-    model.importSource.source,
-    config.importSourceUrl
-  );
+  const module = useLazyModule(model.importSource.source, config.importSourceUrl);
   if (module) {
     const cmpt = getPathProperty(module, model.tagName);
     const children = elementChildren(model);
