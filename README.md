@@ -1,2 +1,3 @@
-# idom-client-react
-A client for IDOM implemented in React
+# THIS PROJECT HAS MOVED
+
+https://github.com/idom-team/idom
